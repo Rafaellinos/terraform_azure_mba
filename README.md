@@ -1,7 +1,9 @@
 ## Learning Terraform / Azure
 
 Como conectar com o MySQL:
+
 ```shell
+foo@bar:~$ terraform init && terraform apply
 foo@bar:~$ mysql -u root -h $(terraform output public_id | tr -d '"') -p
 ```
 
