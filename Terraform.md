@@ -1,5 +1,10 @@
 ## Learning Terraform / Azure
 
+Como conectar com o MySQL:
+```shell
+foo@bar:~$ mysql -u root -h $(terraform output public_id | tr -d '"') -p
+```
+
 * provider.tf = Responsável por definir a plataforma como Azure como provedor
 * resource_group.tf = Para o Azure, precisa-se criar um resource group com a vm, network, vn etc
 * terraform plain = Faz diff do conteúdo local com da nuvem
@@ -17,3 +22,5 @@
     - Setar a variaveis para subir: terraform apply-<VARNAME>=VALUE ou com variaveis de ambiente
     - Possível setar default: variable "teste" {type string default "123"}
 * terraform taint null_resource.upload = recriar um recurso
+
+> Criado por Rafael Veloso

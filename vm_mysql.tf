@@ -185,8 +185,13 @@ resource "null_resource" "deploy" {
             "sudo apt-get update",
             "sudo apt-get install -y mysql-server-5.7",
             "sudo cp -f /home/${var.user}/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf",
+            "sudo mysql -u root -proot -e \"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION; FLUSH PRIVILEGES;\"",
             "sudo service mysql restart",
             "sleep 20",
         ]
     }
+}
+
+output "public_id" {
+  value = data.azurerm_public_ip.mysql_public_ip_data.ip_address 
 }
