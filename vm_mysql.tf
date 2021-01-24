@@ -1,18 +1,18 @@
 variable "user" {
-  type = string
-  default = "azureuser"
+  type        = string
+  default     = "azureuser"
   description = "SSH user"
 }
 
 variable "password" {
-  type = string
-  default = "mysql@768!"
+  type        = string
+  default     = "mysql@768!"
   description = "SSH user password"
 }
 
 variable "location" {
-  type = string
-  default = "eastus"
+  type        = string
+  default     = "eastus"
   description = "Location Azure"
 }
 
@@ -56,7 +56,7 @@ resource "azurerm_public_ip" "mysql_public_ip" {
     location                     = var.location
     resource_group_name          = azurerm_resource_group.mysql_resource_group.name
     allocation_method            = "Static"
-    idle_timeout_in_minutes = 30
+    idle_timeout_in_minutes      = 30
 }
 
 data "azurerm_public_ip" "mysql_public_ip_data" {
@@ -125,12 +125,13 @@ resource "azurerm_linux_virtual_machine" "mysql_vm" {
     location              = var.location
     resource_group_name   = azurerm_resource_group.mysql_resource_group.name
     network_interface_ids = [azurerm_network_interface.mysql_nic.id]
-    size                  = "Standard_B1ls"
+    #size                  = "Standard_B1ls"
+    size                  = "Standard_DS1_v2"
 
     os_disk {
-        name              = "mysqlDisk"
-        caching           = "ReadWrite"
-        storage_account_type = "Premium_LRS"
+        name                    = "mysqlDisk"
+        caching                 = "ReadWrite"
+        storage_account_type    = "Premium_LRS"
     }
 
     source_image_reference {
@@ -151,20 +152,20 @@ resource "azurerm_linux_virtual_machine" "mysql_vm" {
 }
 
 resource "time_sleep" "wait_30_seconds" {
-  depends_on = [azurerm_linux_virtual_machine.mysql_vm]
+  depends_on      = [azurerm_linux_virtual_machine.mysql_vm]
   create_duration = "30s"
 }
 
 resource "null_resource" "upload" {
     provisioner "file" {
         connection {
-            type = "ssh"
-            user = var.user
-            password = var.password
-            host = data.azurerm_public_ip.mysql_public_ip_data.ip_address
+            type        = "ssh"
+            user        = var.user
+            password    = var.password
+            host        = data.azurerm_public_ip.mysql_public_ip_data.ip_address
         }
-        source = "./mysqld.cnf"
-        destination = "/home/${var.user}/mysqld.cnf"
+        source          = "./mysqld.cnf"
+        destination     = "/home/${var.user}/mysqld.cnf"
     }
 
     depends_on = [ time_sleep.wait_30_seconds ]
@@ -176,10 +177,10 @@ resource "null_resource" "deploy" {
     }
     provisioner "remote-exec" {
         connection {
-            type = "ssh"
-            user = var.user
-            password = var.password
-            host = data.azurerm_public_ip.mysql_public_ip_data.ip_address
+            type        = "ssh"
+            user        = var.user
+            password    = var.password
+            host        = data.azurerm_public_ip.mysql_public_ip_data.ip_address
         }
         inline = [
             "sudo apt-get update",
