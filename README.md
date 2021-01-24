@@ -4,7 +4,7 @@ Como conectar com o MySQL:
 
 ```shell
 foo@bar:~$ terraform init && terraform apply
-foo@bar:~$ mysql -u root -h $(terraform output public_id | tr -d '"') -p
+foo@bar:~$ mysql -u root -h $(terraform output public_id | tr -d '"') -proot
 ```
 
 * provider.tf = Responsável por definir a plataforma como Azure como provedor
